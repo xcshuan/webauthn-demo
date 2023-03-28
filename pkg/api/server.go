@@ -202,6 +202,20 @@ func (s *Server) finishLogin(w http.ResponseWriter, r *http.Request) {
 	jsonResponse(w, "Login Success", http.StatusOK)
 }
 
+func (s *Server) logout(w http.ResponseWriter, r *http.Request) {
+	logrus.Debug("Logout")
+
+	// TODO how do we know this is for the same user that's passed in?
+
+	if err := s.sessionStore.DeleteWebauthnSession("authentication", r, w); err != nil {
+		logrus.WithError(err).Error("DeleteWebauthnSession failed")
+		jsonResponse(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	jsonResponse(w, "Logout Success", http.StatusOK)
+}
+
 // Start
 func (s *Server) Start() {
 	logrus.Info("starting server at", s.listenAddr)
@@ -243,6 +257,8 @@ func NewServer(addr string) (*Server, error) {
 	r.HandleFunc("/register/finish/{username}", s.finishRegistration).Methods("POST")
 	r.HandleFunc("/login/begin/{username}", s.beginLogin).Methods("GET")
 	r.HandleFunc("/login/finish/{username}", s.finishLogin).Methods("POST")
+
+	r.HandleFunc("/logout", s.logout).Methods("GET")
 
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./views")))
 

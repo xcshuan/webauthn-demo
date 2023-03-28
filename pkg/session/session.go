@@ -89,7 +89,7 @@ func (store *Store) GetWebauthnSession(key string, r *http.Request) (webauthn.Se
 		return sessionData, err
 	}
 
-	//Don't delete the session after using it; sessions must persist for voting demo
+	//Don't delete the session after using it; sessions must persist
 	//delete(session.Values, key)
 	return sessionData, nil
 }
