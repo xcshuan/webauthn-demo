@@ -54,7 +54,10 @@ func (s *Server) beginRegistration(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		displayName := strings.Split(username, "@")[0]
 		user = database.NewUser(username, displayName)
-		s.userDB.PutUser(user)
+		if err := s.userDB.PutUser(user); err != nil {
+			jsonResponse(w, fmt.Errorf(err.Error()), http.StatusBadRequest)
+			return
+		}
 	}
 
 	// generate PublicKeyCredentialCreationOptions, session data
@@ -119,6 +122,10 @@ func (s *Server) finishRegistration(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user.AddCredential(*credential)
+	if err := s.userDB.PutUserCredentials(user); err != nil {
+		jsonResponse(w, fmt.Errorf(err.Error()), http.StatusBadRequest)
+		return
+	}
 
 	jsonResponse(w, "Registration Success", http.StatusOK)
 	return
@@ -243,7 +250,10 @@ func NewServer(addr string) (*Server, error) {
 		return nil, fmt.Errorf("%w; failed to create WebAuthn from config", err)
 	}
 
-	s.userDB = database.DB()
+	s.userDB, err = database.NewDb("file:./users.db")
+	if err != nil {
+		return nil, err
+	}
 
 	s.sessionStore, err = session.NewStore()
 	if err != nil {
