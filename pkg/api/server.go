@@ -5,21 +5,29 @@ import (
 	"fmt"
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/webauthn"
+	jwt2 "github.com/golang-jwt/jwt"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"strings"
+	"time"
 	"webauthn/pkg/database"
+	"webauthn/pkg/jwt"
 	"webauthn/pkg/session"
 )
 
+// Server the WebAuthn "Relying Party" implementation
 type Server struct {
+	href       string
 	listenAddr string
 	mux        *mux.Router
 
 	webAuthn     *webauthn.WebAuthn
 	sessionStore *session.Store
 	userDB       *database.UserDB
+
+	// jwtSvc to create a JWT bearer token sent on response to /login
+	jwtSvc *jwt.JWT
 }
 
 func jsonResponse(w http.ResponseWriter, d interface{}, c int) {
@@ -123,7 +131,7 @@ func (s *Server) finishRegistration(w http.ResponseWriter, r *http.Request) {
 
 	user.AddCredential(*credential)
 	if err := s.userDB.PutUserCredentials(user); err != nil {
-		jsonResponse(w, fmt.Errorf(err.Error()), http.StatusBadRequest)
+		jsonResponse(w, fmt.Errorf(err.Error()), http.StatusInternalServerError)
 		return
 	}
 
@@ -205,6 +213,11 @@ func (s *Server) finishLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// create a JWT bearer token and add to the header response
+	claims := jwt2.MapClaims{"iss": s.href}
+	token := s.jwtSvc.SignClaims(claims, time.Now().Add(5*time.Minute))
+	w.Header().Set("Authorization", "Bearer "+token)
+
 	// handle successful login
 	jsonResponse(w, "Login Success", http.StatusOK)
 }
@@ -236,14 +249,17 @@ func NewServer(addr string) (*Server, error) {
 		return nil, fmt.Errorf("requires hostname from listen address to provide as RPOrigin")
 	}
 
-	s := &Server{listenAddr: addr}
+	s := &Server{
+		listenAddr: addr,
+		href:       "http://" + addr,
+	}
 
 	var err error
 	s.webAuthn, err = webauthn.New(&webauthn.Config{
-		RPDisplayName:        "Foobar Corp.",                     // display name for your site
-		RPID:                 "localhost",                        // generally the domain name for your site
-		RPOrigins:            []string{"http://" + s.listenAddr}, // The origin URLs allowed for WebAuthn requests
-		EncodeUserIDAsString: false,                              // is/not URLEncodedBase64
+		RPDisplayName:        "Foobar Corp.",   // display name for your site
+		RPID:                 "localhost",      // generally the domain name for your site
+		RPOrigins:            []string{s.href}, // The origin URLs allowed for WebAuthn requests
+		EncodeUserIDAsString: false,            // is/not URLEncodedBase64
 	})
 
 	if err != nil {
@@ -263,6 +279,7 @@ func NewServer(addr string) (*Server, error) {
 	r := mux.NewRouter()
 	s.mux = r
 
+	// webauthn endpoints
 	r.HandleFunc("/register/begin/{username}", s.beginRegistration).Methods("GET")
 	r.HandleFunc("/register/finish/{username}", s.finishRegistration).Methods("POST")
 	r.HandleFunc("/login/begin/{username}", s.beginLogin).Methods("GET")
@@ -270,6 +287,17 @@ func NewServer(addr string) (*Server, error) {
 
 	r.HandleFunc("/logout", s.logout).Methods("GET")
 
+	// to sign JWT bearer token - considering this could be the only authorization flow
+	s.jwtSvc, err = jwt.NewJWT("./TestCertificate.crt")
+	if err != nil {
+		return nil, err
+	}
+	jwks := s.jwtSvc.NewJWKService()
+	r.HandleFunc("/well-known/jwks", func(w http.ResponseWriter, r *http.Request) {
+		jwks.WriteResponse(w, r)
+	}).Methods(http.MethodGet)
+
+	// for static pages e.g. javascript
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./views")))
 
 	return s, nil

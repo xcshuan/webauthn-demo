@@ -69,6 +69,7 @@ func (db *UserDB) PutUser(user *User) error {
 	return err
 }
 
+// PutUserCredentials update user record with current sets of known credentials for the user
 func (db *UserDB) PutUserCredentials(user *User) error {
 	user.UpdatedAt = time.Now()
 	err := db.db.Model(&user).Updates(User{

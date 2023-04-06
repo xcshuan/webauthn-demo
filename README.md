@@ -32,6 +32,14 @@ Login begin sets the `webauthn-session` cookie and returns the public key for th
 
 From here on, server endpoints can simply validate the `webauthn-session` cookie. Once the session expires, /login should be called again by the javascript. To logout, the session cookie should be destroyed.
 
+### Login from multiple devices
+* Use an externalized token, such as YubiKey
+* Register with a passkey from your Mac. You can use an iPhone to authenticate using that same passkey that was stored in iCloud.
+* Register the same user with multiple authenticators (OS, YubiKey, et.al.) - this is the recommended solution to have backup/recovery tokens in webauthn
+
+### JWT support
+Right now I'm unclear as to where JWT signing should occur in the webauthn flow where webauthn is the single factor. However, to complete the example of using **ONLY** webauthn for authentication, I added support to sign a JWT and return it on `/login/finish`. An [example key](./TestCertificate.crt) is used in signing. It also satisfies the JWKS' `/well-known/jwks` endpoint.
+
 ## Resources
 * https://www.herbie.dev/blog/webauthn-basic-web-client-server/
 * https://github.com/go-webauthn/webauthn/blob/master/README.md#quickstart

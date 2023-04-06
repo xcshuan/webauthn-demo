@@ -9,7 +9,7 @@ import (
 	"github.com/go-webauthn/webauthn/webauthn"
 )
 
-// User represents the user model
+// User represents the user model and implements the github.com/go-webauthn/webauthn/webauthn.User interface
 type User struct {
 	ID          uint64    `gorm:"primary_key"`
 	CreatedAt   time.Time `json:"created_at,omitempty"`
