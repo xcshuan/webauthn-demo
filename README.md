@@ -41,6 +41,7 @@ From here on, server endpoints can simply validate the `webauthn-session` cookie
 Right now I'm unclear as to where JWT signing should occur in the webauthn flow where webauthn is the single factor. However, to complete the example of using **ONLY** webauthn for authentication, I added support to sign a JWT and return it on `/login/finish`. An [example key](./TestCertificate.crt) is used in signing. It also satisfies the JWKS' `/well-known/jwks` endpoint.
 
 ## Resources
+* https://github.com/herrjemand/awesome-webauthn
 * https://www.herbie.dev/blog/webauthn-basic-web-client-server/
 * https://github.com/go-webauthn/webauthn/blob/master/README.md#quickstart
 * https://fidoalliance.org/specs/fido-v2.0-rd-20180702/fido-server-v2.0-rd-20180702.html#registration
