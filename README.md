@@ -17,7 +17,7 @@ After providing an email address and clicking the **Register** button, the `/reg
 
 ![After clicking "Other Options" from "save passkey" dialog](./doc/SafariRegisterSecurityKey.png)
 
-This dialog prompts you for the type of passkey device to be used. On Mac Safari you may have options including the OS login passkey, using your paired iPhone as the authenticator device, or for this example, choosing the **Security Key** to use a YubiKey.
+This dialog prompts you for the type of authenticator to be used. On Mac Safari you may have options including the Platform passkey (touchID, etc), using your paired iPhone as the authenticator device, or for this example, choosing the **Security Key** to use a YubiKey.
 
 ![Choose to use YubiKey](./doc/SafariRegisterEnterSecurityKey.png)
 
@@ -34,11 +34,11 @@ From here on, server endpoints can simply validate the `webauthn-session` cookie
 
 ### Login from multiple devices
 * Use an roaming authenticator, such as YubiKey
-* Register with a passkey from your Mac. You can use an iPhone to authenticate using that same passkey that was stored in iCloud.
-* Register the same user with multiple authenticators (OS, YubiKey, et.al.) - this is the recommended solution to have backup/recovery passkeys in webauthn
+* Register with a Platform passkey from your Mac. You can use an iPhone to authenticate using that same passkey that was stored in iCloud.
+* Register the same user with multiple authenticators (Platform, YubiKey, et.al.) - this is the recommended solution to have backup/recovery passkeys in webauthn
 
 ### JWT support
-Right now I'm unclear as to where JWT signing should occur in the webauthn flow where webauthn is the single factor. However, to complete the example of using **ONLY** webauthn for authentication, I added support to sign a JWT and return it on `/login/finish`. An [example key](./TestCertificate.crt) is used in signing. It also satisfies the JWKS' `/well-known/jwks` endpoint.
+Right now I'm unclear as to where JWT signing should occur in the webauthn flow where webauthn is the **single** factor. However, to complete the example of using **ONLY** webauthn for authentication, I added support to sign a JWT and return it on `/login/finish`. An [example key](./TestCertificate.crt) is used in signing. It also satisfies the JWKS' `/well-known/jwks` endpoint.
 
 ## Resources
 * https://github.com/herrjemand/awesome-webauthn
