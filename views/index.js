@@ -53,11 +53,13 @@ function registerUser() {
                     return data
                 },
                 'json')
-            // TODO expose the error if $.post returns not 200
-        })
-        .then((success) => {
-            alert("successfully registered " + username + "!")
-            return
+                .fail(function (response) {
+                    console.log(response.responseText);
+                    alert("error: " + response.responseText);
+                })
+                .then((success) => {
+                    alert("successfully registered " + username + "!")
+                })
         })
         .catch((error) => {
             console.log(error)

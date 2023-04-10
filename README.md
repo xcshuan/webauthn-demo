@@ -1,6 +1,6 @@
 # WebAuthN Example in Go
 
-This is a Demo to provide insight into a WebAuthn flow.
+This is a Demo to provide insight into a WebAuthn flow with FIDO2 being the single step (factor) authenticator.
 
 ## Caveats
 

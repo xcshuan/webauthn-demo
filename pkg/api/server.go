@@ -125,7 +125,8 @@ func (s *Server) finishRegistration(w http.ResponseWriter, r *http.Request) {
 	credential, err := s.webAuthn.FinishRegistration(user, sessionData, r)
 	if err != nil {
 		l.WithError(err).Error("FinishRegistration failed")
-		jsonResponse(w, err.Error(), http.StatusBadRequest)
+		extra := err.(*protocol.Error).DevInfo
+		jsonResponse(w, err.Error()+"\n"+extra, http.StatusBadRequest)
 		return
 	}
 
