@@ -59,6 +59,7 @@ func (s *Server) beginRegistration(w http.ResponseWriter, r *http.Request) {
 	// get user
 	user, err := s.userDB.GetUser(username)
 	// user doesn't exist, create new user
+	// WARN: only if you want to allow auto registration of any user
 	if err != nil {
 		displayName := strings.Split(username, "@")[0]
 		user = database.NewUser(username, displayName)
