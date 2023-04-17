@@ -1,0 +1,225 @@
+[
+    {
+      "inputs": [
+        {
+          "internalType": "bytes",
+          "name": "_data",
+          "type": "bytes"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_index",
+          "type": "uint256"
+        }
+      ],
+      "name": "ReadBytes32OutOfBounds",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "userName",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "sigX",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "sigY",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "challenge",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "authenticatorData",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "clientDataJSONPre",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "clientDataJSONPost",
+          "type": "bytes"
+        }
+      ],
+      "name": "authenticateUseES256",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "validationData",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "userName",
+          "type": "string"
+        },
+        {
+          "internalType": "bytes",
+          "name": "signature",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "challenge",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "authenticatorData",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "clientDataJSONPre",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "clientDataJSONPost",
+          "type": "bytes"
+        }
+      ],
+      "name": "authenticateUseRS256",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "validationData",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "name": "authorisedP256Keys",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "pubKeyX",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "pubKeyY",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "keyId",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "name": "authorisedRSAKeys",
+      "outputs": [
+        {
+          "internalType": "bytes",
+          "name": "n",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "e",
+          "type": "bytes"
+        },
+        {
+          "internalType": "string",
+          "name": "keyId",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "userName",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "keyId",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "pubKeyX",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "pubKeyY",
+          "type": "uint256"
+        }
+      ],
+      "name": "registerP256Key",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "userName",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "keyId",
+          "type": "string"
+        },
+        {
+          "internalType": "bytes",
+          "name": "n",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "e",
+          "type": "bytes"
+        }
+      ],
+      "name": "registerRSAKey",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ]

@@ -7,12 +7,13 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"github.com/golang-jwt/jwt"
 	"math/big"
 	"os"
 	"strings"
 	"time"
 	"unsafe"
+
+	"github.com/golang-jwt/jwt"
 )
 
 // JWT a mock interface to JWT signing
